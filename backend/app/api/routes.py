@@ -38,9 +38,15 @@ def chat(req: ChatRequest):
 # ✅ ВАЖНО: webhook ДОЛЖЕН БЫТЬ СНАРУЖИ
 @router.post("/webhook/vk")
 async def vk_webhook(request: Request):
-    data = await request.json()
+    print("VK WEBHOOK HIT")
 
+    data = await request.json()
     print("VK DATA:", data)
+
+    if data["type"] == "confirmation":
+        return "c0740fbf"
+
+    return "ok"
 
     # подтверждение сервера
     if data["type"] == "confirmation":
