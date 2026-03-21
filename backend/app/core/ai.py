@@ -24,7 +24,8 @@ SYSTEM_PROMPT = """
 Отвечай понятно, без сложных слов, как живой человек.
 """
 
-def ask_ai(message: str):
+def ask_ai(text):
+    return "Тестовый ответ"
     try:
         response = client.chat.completions.create(
             model="gpt-4o-mini",
