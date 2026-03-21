@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 from backend.app.core.ai import ask_ai
 from backend.app.core.memory import save, get
@@ -44,9 +44,16 @@ async def vk_webhook(request: Request):
     print("VK DATA:", data)
 
     if data["type"] == "confirmation":
-        return "c0740fbf"
+        return PlainTextResponse("c0740fbf")
 
-    return "ok"
+    if data["type"] == "message_new":
+        user_id = data["object"]["message"]["from_id"]
+        text = data["object"]["message"]["text"]
+
+        answer = ask_ai(text)
+        send_message(user_id, answer)
+
+    return PlainTextResponse("ok")
 
     # подтверждение сервера
     if data["type"] == "confirmation":
