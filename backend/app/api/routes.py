@@ -1,3 +1,4 @@
+from fastapi import APIRouter, Request
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 from backend.app.core.ai import ask_ai
