@@ -45,7 +45,7 @@ async def vk_webhook(request: Request):
     # подтверждение сервера
     if data["type"] == "confirmation":
         print("CONFIRMATION SENT")
-        return "4aea2e2f"
+        return "c0740fbf"
 
     # новое сообщение
     if data["type"] == "message_new":
