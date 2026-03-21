@@ -7,7 +7,8 @@ import os
 
 router = APIRouter()
 
-VK_CONFIRMATION = os.getenv("VK_CONFIRMATION")
+# ❗ ВРЕМЕННО ВСТАВЛЯЕМ ЖЁСТКО (чтобы точно заработало)
+VK_CONFIRMATION = "4aea2e2f"
 
 
 class ChatRequest(BaseModel):
@@ -34,16 +35,17 @@ def chat(req: ChatRequest):
         return {"response": "Ошибка сервера"}
 
 
-# ❗ ВАЖНО: webhook отдельно
+# ✅ ВАЖНО: webhook ДОЛЖЕН БЫТЬ СНАРУЖИ
 @router.post("/webhook/vk")
 async def vk_webhook(request: Request):
     data = await request.json()
 
-    print("VK DATA:", data)  # для логов
+    print("VK DATA:", data)
 
     # подтверждение сервера
     if data["type"] == "confirmation":
-        return VK_CONFIRMATION
+        print("CONFIRMATION SENT")
+        return "4aea2e2f"
 
     # новое сообщение
     if data["type"] == "message_new":
