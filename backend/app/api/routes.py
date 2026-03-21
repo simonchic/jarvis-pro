@@ -5,19 +5,21 @@ router = APIRouter()
 
 @router.post("/webhook/vk")
 async def vk_webhook(request: Request):
-    body = await request.body()
-    print("RAW BODY:", body)
-
     data = await request.json()
-    print("DATA:", data)
 
     if data.get("type") == "confirmation":
         return Response(
-            content="9cdbbfba",
-            media_type="text/plain; charset=utf-8"
+            content=b"9cdbbfba",
+            status_code=200,
+            headers={
+                "Content-Type": "text/plain"
+            }
         )
 
     return Response(
-        content="ok",
-        media_type="text/plain; charset=utf-8"
+        content=b"ok",
+        status_code=200,
+        headers={
+            "Content-Type": "text/plain"
+        }
     )
