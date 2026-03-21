@@ -1,0 +1,20 @@
+import sqlite3
+
+def create_task(user_id, text):
+    conn = sqlite3.connect("database/tasks.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS tasks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id TEXT,
+        text TEXT,
+        status TEXT
+    )
+    """)
+
+    cursor.execute("INSERT INTO tasks (user_id, text, status) VALUES (?, ?, ?)",
+                   (user_id, text, "pending"))
+
+    conn.commit()
+    conn.close()

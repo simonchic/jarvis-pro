@@ -1,0 +1,11 @@
+from app.core.ai import ask_ai
+from app.core.tasks import create_task
+
+def handle_message(user_id, message):
+    
+    if "сделай" in message.lower():
+        create_task(user_id, message)
+        return "Задача принята. Выполняю."
+
+    response = ask_ai(message)
+    return response
