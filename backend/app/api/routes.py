@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Request
+from fastapi.responses import PlainTextResponse
 
 router = APIRouter()
 
@@ -8,6 +9,6 @@ async def vk_webhook(request: Request):
     print("ДАННЫЕ:", data)
 
     if data.get("type") == "confirmation":
-        return "4e2d9d86"
+        return PlainTextResponse("4e2d9d86", status_code=200)
 
-    return "ok"
+    return PlainTextResponse("ok", status_code=200)
