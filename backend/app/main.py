@@ -1,34 +1,20 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import PlainTextResponse
+from fastapi import FastAPI, Request, Response
 
 app = FastAPI()
 
-CONFIRMATION_TOKEN = "4e2d9d86"
+@app.get("/")
+def root():
+    return {"status": "JARVIS работает"}
 
-# 👉 VK может бить сюда
-@app.post("/")
-async def vk_root(request: Request):
-    data = await request.json()
-    print("ROOT DATA:", data)
-
-    if data.get("type") == "confirmation":
-        return PlainTextResponse(CONFIRMATION_TOKEN)
-
-    return PlainTextResponse("ok")
-
-
-# 👉 и сюда
 @app.post("/webhook/vk")
 async def vk_webhook(request: Request):
     data = await request.json()
     print("WEBHOOK DATA:", data)
 
+    # Подтверждение адреса для VK
     if data.get("type") == "confirmation":
-        return PlainTextResponse(CONFIRMATION_TOKEN)
+        # Возвращаем строго plain text без кавычек, JSON и лишних символов
+        return Response(content="4e2d9d86", media_type="text/plain; charset=utf-8")
 
-    return PlainTextResponse("ok")
-
-
-@app.get("/")
-def root():
-    return {"status": "JARVIS работает"}
+    # Для всех остальных событий VK
+    return Response(content="ok", media_type="text/plain; charset=utf-8")
