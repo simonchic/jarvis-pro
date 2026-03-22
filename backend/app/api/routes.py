@@ -3,7 +3,7 @@ from fastapi.responses import PlainTextResponse
 
 router = APIRouter()
 
-VK_CONFIRMATION = "cfe77b44"
+VK_CONFIRMATION = "10ac93d4"
 
 @router.post("/webhook/vk")
 async def vk_webhook(request: Request):
