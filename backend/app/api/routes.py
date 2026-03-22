@@ -1,16 +1,17 @@
 from fastapi import APIRouter, Request
-from starlette.responses import Response
+from fastapi.responses import PlainTextResponse
 
 router = APIRouter()
+
+VK_CONFIRMATION = "cfe77b44"
 
 @router.post("/webhook/vk")
 async def vk_webhook(request: Request):
     data = await request.json()
 
-    if data.get("type") == "confirmation":
-        return Response(
-            content=b"cfe77b44",
-            media_type="text/plain"
-        )
+    print("VK DATA:", data)
 
-    return Response(content=b"ok", media_type="text/plain")
+    if data.get("type") == "confirmation":
+        return PlainTextResponse(VK_CONFIRMATION)
+
+    return PlainTextResponse("ok")
