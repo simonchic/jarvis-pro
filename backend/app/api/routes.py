@@ -8,10 +8,20 @@ VK_CONFIRMATION = "10ac93d4"
 @router.post("/webhook/vk")
 async def vk_webhook(request: Request):
     data = await request.json()
+    print("ДАННЫЕ:", data)
 
-    print("VK DATA:", data)
+    # подтверждение сервера
+    if data["type"] == "confirmation":
+        print("ОТПРАВИТЬ ПОДТВЕРЖДЕНИЕ")
+        return "10ac93"  # <- вставь новый код
 
-    if data.get("type") == "confirmation":
-        return PlainTextResponse(VK_CONFIRMATION)
+    # новое сообщение
+    if data["type"] == "message_new":
+        user_id = data["object"]["message"]["from_id"]
+        text = data["object"]["message"]["text"]
 
-    return PlainTextResponse("ok")
+        answer = ask_ai(text)
+
+        send_message(user_id, answer)
+
+    return "ok"
