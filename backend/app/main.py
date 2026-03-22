@@ -1,24 +1,33 @@
 from fastapi import FastAPI, Request
-from starlette.responses import Response
+from fastapi.responses import PlainTextResponse
 
 app = FastAPI()
 
+CONFIRMATION_TOKEN = "4e2d9d86"
+
+# 👉 VK может бить сюда
+@app.post("/")
+async def vk_root(request: Request):
+    data = await request.json()
+    print("ROOT DATA:", data)
+
+    if data.get("type") == "confirmation":
+        return PlainTextResponse(CONFIRMATION_TOKEN)
+
+    return PlainTextResponse("ok")
+
+
+# 👉 и сюда
 @app.post("/webhook/vk")
 async def vk_webhook(request: Request):
     data = await request.json()
-    print("RAW DATA:", data)
+    print("WEBHOOK DATA:", data)
 
     if data.get("type") == "confirmation":
-        return Response(
-            content=b"4e2d9d86",
-            media_type="text/plain",
-            headers={"Content-Length": "8"}
-        )
+        return PlainTextResponse(CONFIRMATION_TOKEN)
 
-    return Response(
-        content=b"ok",
-        media_type="text/plain"
-    )
+    return PlainTextResponse("ok")
+
 
 @app.get("/")
 def root():
