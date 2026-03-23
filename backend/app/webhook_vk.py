@@ -23,41 +23,28 @@ CONFIRMATION_CODE = "1388031a"
 
 @router.post("/webhook/vk")
 async def vk_webhook(request: Request):
-    """
-    Обрабатываем POST-запросы от VK.
-    Сначала приходит 'confirmation', чтобы подтвердить сервер.
-    Потом приходят события, например, новые сообщения.
-    """
     data = await request.json()
     print("WEBHOOK DATA:", data)
 
-    # Если VK присылает подтверждение
+    # ✅ Подтверждение сервера
     if data.get("type") == "confirmation":
-        # Возвращаем именно код подтверждения
         return PlainTextResponse(content=CONFIRMATION_CODE)
 
-    # Если событие, например, новое сообщение
+    # ✅ Новое сообщение
     if data.get("type") == "message_new":
-       user_id = data["object"]["message"]["from_id"]
-       text = data["object"]["message"]["text"]
+        user_id = data["object"]["message"]["from_id"]
+        text = data["object"]["message"]["text"]
 
-    print(f"Новое сообщение от {user_id}: {text}")
+        print(f"Новое сообщение от {user_id}: {text}")
 
-    # 🔥 подключаем AI
-    from .core.ai import generate_answer
+        # 🔥 AI
+        from .core.ai import generate_answer
+        answer = generate_answer(user_id, text)
 
-    # 🔥 получаем ответ с памятью
-    answer = generate_answer(user_id, text)
+        # 🔥 отправка
+        send_message(user_id, answer)
 
-    # 🔥 отправляем сообщение
-    from .vk_send_message import send_message
-    send_message(user_id, answer)
+        return PlainTextResponse(content="ok")
 
-    return PlainTextResponse(content="ok")
-
-    send_message(user_id, "Привет! 👋 Заявка на фестиваль: напиши 'участвовать'")
-
-    return PlainTextResponse(content="ok")
-
-    # Для всех остальных событий просто возвращаем 'ok'
+    # ✅ Все остальные события
     return PlainTextResponse(content="ok")
