@@ -1,5 +1,4 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import PlainTextResponse
+from fastapi import FastAPI, Request, Response
 
 app = FastAPI()
 
@@ -11,13 +10,17 @@ async def vk_webhook(request: Request):
     print("WEBHOOK DATA:", data)
 
     if data.get("type") == "confirmation":
-        return PlainTextResponse(VK_CONFIRMATION_CODE)
+        return Response(
+            content=b"2bca2318",
+            media_type="text/plain"
+        )
 
     if data.get("type") == "message_new":
         print("Новое сообщение:", data["object"])
-        return PlainTextResponse("ok")
+        return Response(content=b"ok", media_type="text/plain")
 
-    return PlainTextResponse("ok")
+    return Response(content=b"ok", media_type="text/plain")
+
 
 @app.get("/")
 def root():
