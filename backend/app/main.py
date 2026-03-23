@@ -10,13 +10,13 @@ async def vk_webhook(request: Request):
     data = await request.json()
     print("WEBHOOK DATA:", data)
 
-    # 🔒 Проверка секретного ключа
-    if data.get("secret") != VK_SECRET:
-        return Response(status_code=403)
-
-    # ✅ Подтверждение сервера
+    # ✅ ВАЖНО: confirmation БЕЗ проверки secret
     if data.get("type") == "confirmation":
         return Response(content=b"2bca2318", media_type="text/plain")
+
+    # 🔒 Проверка secret только для остальных событий
+    if data.get("secret") != VK_SECRET:
+        return Response(status_code=403)
 
     # 📩 Новое сообщение
     if data.get("type") == "message_new":
