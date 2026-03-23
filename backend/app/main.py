@@ -3,18 +3,22 @@ from fastapi import FastAPI, Request, Response
 app = FastAPI()
 
 VK_CONFIRMATION_CODE = "2bca2318"
+VK_SECRET = "aaQ13axAPQEcczQa"
 
 @app.post("/webhook/vk")
 async def vk_webhook(request: Request):
     data = await request.json()
     print("WEBHOOK DATA:", data)
 
-    if data.get("type") == "confirmation":
-        return Response(
-            content=b"2bca2318",
-            media_type="text/plain"
-        )
+    # 🔒 Проверка секретного ключа
+    if data.get("secret") != VK_SECRET:
+        return Response(status_code=403)
 
+    # ✅ Подтверждение сервера
+    if data.get("type") == "confirmation":
+        return Response(content=b"2bca2318", media_type="text/plain")
+
+    # 📩 Новое сообщение
     if data.get("type") == "message_new":
         print("Новое сообщение:", data["object"])
         return Response(content=b"ok", media_type="text/plain")
