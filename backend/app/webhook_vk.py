@@ -1,6 +1,21 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import PlainTextResponse
+import requests
+import random
 
+VK_TOKEN = "vk1.a.g4hjBYC45Pz15v9acgA44KNHcqzIz6c7z1UOfNVNgc-sJGQVfeoUzAC4FNhj4TXXdi07cfsX4t3Gggc8_f843JcDnWZ0LEBPD49Wn8Rpt0hKelZ1XPoJkipgCukZR_B5hwkIedtXUknjo8FA4qha4-20U6aEPWF6EMMeNBJwbpdx5HN1_lOeNixpXQ_tNGcWPeAz1Pucno7OWj7Um59i7g"
+
+def send_message(user_id, text):
+    requests.post(
+        "https://api.vk.com/method/messages.send",
+        params={
+            "user_id": user_id,
+            "message": text,
+            "random_id": random.randint(1, 1_000_000),
+            "access_token": VK_TOKEN,
+            "v": "5.199",
+        },
+    )
 router = APIRouter()
 
 # Твой код подтверждения из ВК
@@ -23,11 +38,14 @@ async def vk_webhook(request: Request):
 
     # Если событие, например, новое сообщение
     if data.get("type") == "message_new":
-        user_id = data["object"]["from_id"]
-        text = data["object"]["text"]
-        print(f"Новое сообщение от {user_id}: {text}")
-        # Здесь можно добавить обработку или ответ пользователю через VK API
-        return PlainTextResponse(content="ok")
+       user_id = data["object"]["message"]["from_id"]
+       text = data["object"]["message"]["text"]
+
+       print(f"Новое сообщение от {user_id}: {text}")
+
+       send_message(user_id, "Привет! 👋 Заявка на фестиваль: напиши 'участвовать'")
+
+       return PlainTextResponse(content="ok")
 
     # Для всех остальных событий просто возвращаем 'ok'
     return PlainTextResponse(content="ok")
