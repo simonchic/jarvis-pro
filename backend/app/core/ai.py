@@ -10,6 +10,40 @@ user_histories = {}
 
 
 def generate_answer(user_id: int, user_text: str) -> str:
+    try:
+        if user_id not in user_histories:
+            user_histories[user_id] = [
+                {
+                    "role": "system",
+                    "content": "Ты помощник фестиваля. Помогай записаться."
+                }
+            ]
+
+        user_histories[user_id].append({
+            "role": "user",
+            "content": user_text
+        })
+
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=user_histories[user_id],
+            temperature=0.7
+        )
+
+        answer = response.choices[0].message.content
+
+        user_histories[user_id].append({
+            "role": "assistant",
+            "content": answer
+        })
+
+        return answer
+
+    except Exception as e:
+        print("AI ERROR:", e)
+
+        # 👇 fallback ответ
+        return "Сейчас есть небольшая нагрузка 🙏 Напишите 'участвовать', и я помогу вам подать заявку на фестиваль."
     """
     Генерация ответа с учетом истории диалога
     """
