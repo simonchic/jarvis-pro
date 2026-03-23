@@ -5,12 +5,13 @@ app = FastAPI()
 
 VK_CONFIRMATION_CODE = b"2bca2318"
 
-@app.post("/webhook/vk")
-async def vk_webhook(request: Request):
+# 👉 ЛОВИМ ВСЕ POST ЗАПРОСЫ
+@app.post("/{full_path:path}")
+async def vk_webhook_all(request: Request, full_path: str):
     data = await request.json()
-    print("WEBHOOK DATA:", data)
+    print("PATH:", full_path)
+    print("DATA:", data)
 
-    # 👉 ТОЛЬКО ЧИСТЫЙ ОТВЕТ БЕЗ ВСЕГО
     if data.get("type") == "confirmation":
         return Response(
             content=VK_CONFIRMATION_CODE,
