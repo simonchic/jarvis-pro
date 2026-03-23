@@ -9,6 +9,6 @@ async def vk_webhook(request: Request):
     print("ДАННЫЕ:", data)
 
     if data.get("type") == "confirmation":
-        return PlainTextResponse("4e2d9d86", status_code=200)
+        return PlainTextResponse("2bca2318", status_code=200)
 
     return PlainTextResponse("ok", status_code=200)
