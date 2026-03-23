@@ -1,31 +1,26 @@
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request
+from starlette.responses import Response
 
 app = FastAPI()
 
-VK_CONFIRMATION_CODE = "2bca2318"
-VK_SECRET = "aaQ13axAPQEcczQa"
+VK_CONFIRMATION_CODE = b"2bca2318"
 
 @app.post("/webhook/vk")
 async def vk_webhook(request: Request):
     data = await request.json()
     print("WEBHOOK DATA:", data)
 
-    # ✅ ВАЖНО: confirmation БЕЗ проверки secret
+    # 👉 ТОЛЬКО ЧИСТЫЙ ОТВЕТ БЕЗ ВСЕГО
     if data.get("type") == "confirmation":
-        return Response(content=b"2bca2318", media_type="text/plain")
-
-    # 🔒 Проверка secret только для остальных событий
-    if data.get("secret") != VK_SECRET:
-        return Response(status_code=403)
-
-    # 📩 Новое сообщение
-    if data.get("type") == "message_new":
-        print("Новое сообщение:", data["object"])
-        return Response(content=b"ok", media_type="text/plain")
+        return Response(
+            content=VK_CONFIRMATION_CODE,
+            media_type="text/plain",
+            headers={"Content-Length": "8"}
+        )
 
     return Response(content=b"ok", media_type="text/plain")
 
 
 @app.get("/")
 def root():
-    return {"status": "JARVIS VK сервер работает"}
+    return {"status": "ok"}
