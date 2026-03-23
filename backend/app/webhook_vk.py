@@ -41,11 +41,23 @@ async def vk_webhook(request: Request):
        user_id = data["object"]["message"]["from_id"]
        text = data["object"]["message"]["text"]
 
-       print(f"Новое сообщение от {user_id}: {text}")
+    print(f"Новое сообщение от {user_id}: {text}")
 
-       send_message(user_id, "Привет! 👋 Заявка на фестиваль: напиши 'участвовать'")
+    # 🔥 подключаем AI
+    from .core.ai import generate_answer
 
-       return PlainTextResponse(content="ok")
+    # 🔥 получаем ответ с памятью
+    answer = generate_answer(user_id, text)
+
+    # 🔥 отправляем сообщение
+    from .vk_send_message import send_message
+    send_message(user_id, answer)
+
+    return PlainTextResponse(content="ok")
+
+    send_message(user_id, "Привет! 👋 Заявка на фестиваль: напиши 'участвовать'")
+
+    return PlainTextResponse(content="ok")
 
     # Для всех остальных событий просто возвращаем 'ok'
     return PlainTextResponse(content="ok")
