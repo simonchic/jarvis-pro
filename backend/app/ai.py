@@ -11,7 +11,7 @@ client = OpenAI(
 def generate_answer(user_id, text):
     try:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",  # можно менять если не работает
+            model="gpt-3.5-turbo",  # можно менять если не работает
             messages=[
                 {
                     "role": "system",
