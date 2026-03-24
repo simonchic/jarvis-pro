@@ -32,19 +32,74 @@ async def vk_webhook(request: Request):
 
     # ✅ Новое сообщение
     if data.get("type") == "message_new":
-        user_id = data["object"]["message"]["from_id"]
-        text = data["object"]["message"]["text"]
+       user_id = data["object"]["message"]["from_id"]
+       text = data["object"]["message"]["text"].lower()
 
-        print(f"Новое сообщение от {user_id}: {text}")
+       print(f"Новое сообщение от {user_id}: {text}")
 
-        # 🔥 AI
-        from .core.ai import generate_answer
-        answer = generate_answer(user_id, text)
+    # если пользователь новый
+    if user_id not in user_states:
+        user_states[user_id] = {"step": None, "data": {}}
 
-        # 🔥 отправка
-        send_message(user_id, answer)
+    state = user_states[user_id]
+
+    # 🚀 старт
+    if text == "участвовать":
+        state["step"] = "name"
+        send_message(user_id, "Представьтесь, кто вы?")
+        return PlainTextResponse(content="ok")
+
+    # 👤 кто вы
+    if state["step"] == "name":
+        state["data"]["name"] = text
+        state["step"] = "city"
+        send_message(user_id, "Какой город представляете?")
+        return PlainTextResponse(content="ok")
+
+    # 🌆 город
+    if state["step"] == "city":
+        state["data"]["city"] = text
+        state["step"] = "nomination"
+        send_message(user_id, "Какая у вас номинация?")
+        return PlainTextResponse(content="ok")
+
+    # 🎭 номинация
+    if state["step"] == "nomination":
+        state["data"]["nomination"] = text
+
+        # 💥 финал + ссылка
+        send_message(
+            user_id,
+            "Отлично 🙌\n\n"
+            "Теперь пройдите по ссылке и заполните заявку:\n"
+            "https://m.vk.com/app5708398_-189023036?ref=group_menu\n\n"
+            "После отправки наши администраторы свяжутся с вами 📩"
+        )
+
+        # лог (чтобы ты видел заявки)
+        print("ЗАЯВКА:", state["data"])
+
+        # сброс
+        user_states[user_id] = {"step": None, "data": {}}
 
         return PlainTextResponse(content="ok")
+
+    # если не в сценарии
+    send_message(
+        user_id,
+        "Напишите 'участвовать', чтобы подать заявку на фестиваль 🎭"
+    )
+
+    return PlainTextResponse(content="ok")
+
+        # 🔥 AI
+    from .core.ai import generate_answer
+    answer = generate_answer(user_id, text)
+
+        # 🔥 отправка
+    send_message(user_id, answer)
+
+    return PlainTextResponse(content="ok")
 
     # ✅ Все остальные события
     return PlainTextResponse(content="ok")
