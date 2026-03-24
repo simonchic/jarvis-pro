@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import PlainTextResponse
+from backend.app.vk_keyboard import get_main_keyboard
 
 router = APIRouter()
 

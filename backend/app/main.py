@@ -3,6 +3,8 @@
 # 1️⃣ Импортируем FastAPI и наш роутер для VK
 from fastapi import FastAPI
 from .webhook_vk import router as vk_router  # <-- здесь подключаем webhook_vk.py
+from backend.app.vk_keyboard import get_main_keyboard
+
 
 # 2️⃣ Создаём сервер FastAPI
 app = FastAPI()
