@@ -3,6 +3,9 @@ from fastapi.responses import PlainTextResponse
 import requests
 import random
 
+# 🧠 Хранилище состояний пользователей
+user_states = {}
+
 VK_TOKEN = "vk1.a.g4hjBYC45Pz15v9acgA44KNHcqzIz6c7z1UOfNVNgc-sJGQVfeoUzAC4FNhj4TXXdi07cfsX4t3Gggc8_f843JcDnWZ0LEBPD49Wn8Rpt0hKelZ1XPoJkipgCukZR_B5hwkIedtXUknjo8FA4qha4-20U6aEPWF6EMMeNBJwbpdx5HN1_lOeNixpXQ_tNGcWPeAz1Pucno7OWj7Um59i7g"
 
 def send_message(user_id, text):
